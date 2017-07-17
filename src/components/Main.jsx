@@ -14,7 +14,9 @@ imageDatas = ((arr) =>{
 
 var ImgFigure = React.createClass({
 	render(){
-		
+		return (
+			<figure></figure>
+		);
 	}
 });
 
