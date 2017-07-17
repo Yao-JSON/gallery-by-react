@@ -2,7 +2,7 @@ require('normalize.css/normalize.css');
 require('styles/App.scss');
 
 import React from 'react';
-const imageDatas = require('../data/imageDatas.json');
+let imageDatas = require('../data/imageDatas.json');
 imageDatas = ((arr) =>{
 	for(let i =0;i<arr.length;i++){
 		let singleImageData = arr[i];
@@ -15,7 +15,14 @@ imageDatas = ((arr) =>{
 var ImgFigure = React.createClass({
 	render(){
 		return (
-			<figure></figure>
+			<figure className="img-figure">
+				<img src={this.props.data.imageURL}
+					alt={this.props.data.title}
+				/>
+				<figcaption>
+					<h2 className="img-title">{this.props.data.title}</h2>
+				</figcaption>
+			</figure>
 		);
 	}
 });
@@ -23,18 +30,25 @@ var ImgFigure = React.createClass({
 
 class AppComponent extends React.Component {
   render() {
+  	let controllerUnits = [],imgFigures = [];
+  	imageDatas.forEach((value,index) => {
+  		imgFigures.push(<ImgFigure data={value}/>);
+  	});
     return (
-       <section className="stage">
-      		<section className="img-src">
-      			
-      		</section>
-      		<nav className="cantroller-nav"></nav>
-       </section>
+       <section className="stage" ref="stage">
+            <section className="img-url">
+                {imgFigures}
+            </section>
+            <nav className="controller-nav">
+                {controllerUnits}
+            </nav>
+        </section>
     );
   }
 }
 
 AppComponent.defaultProps = {
-};
 
-export default AppComponent;
+}
+
+module.exports =AppComponent;
