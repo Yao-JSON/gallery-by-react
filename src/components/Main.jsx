@@ -27,7 +27,7 @@ var ImgFigure = React.createClass({
 });
 
 
-class AppComponent extends React.Component {
+let  AppComponent = React.createClass ({
 	Constant:{
 		centerPos:{
 			left:0,
@@ -51,12 +51,14 @@ class AppComponent extends React.Component {
 		stageH = stageDom.scrollHeigth,
 		halfStageW = Math.ceil(stageW/2),
 		halfStageH = Math.ceil(stageH/2);
+		console.log(stageDom);
 		// 拿到imgFigureDow  的大小
 		var imgFigureDOM = React.findDOMNode(this.refs.imgFigure0),
 		imgW = imgFigureDOM.scrollWidth,
 		imgH = imgFigureDOM.scrollHeigth,
 		halfImgW = Math.ceil(imgW / 2),
 		halfImgH = Math.ceil(imgH / 2);
+
 		// 计算中心图片的位置点
 		this.Constant.centerPos = {
 			left:halfStageW - halfImgW,
@@ -84,30 +86,39 @@ class AppComponent extends React.Component {
 	rearrange(){
 
 	},
-	getInitialState(){
+	getInitialState () {
+		console.log(this);
 		return {
-			imgsArrangeArr:[/*{
-                pos: {
-                    left: '0',
-                    top: '0'
-                },
-                rotate: 0,    // 旋转角度
-                isInverse: false,    // 图片正反面
-                isCenter: false,    // 图片是否居中
-            }*/]
-		}
+		    imgsArrangeArr: [
+		        /*{
+		            pos: {
+		                left: '0',
+		                top: '0'
+		            },
+		            rotate: 0,    // 旋转角度
+		            isInverse: false,    // 图片正反面
+		            isCenter: false,    // 图片是否居中
+		        }*/
+		    ]
+		};
 	},
 	render() {
 		let controllerUnits = [],imgFigures = [];
-		imageDatas.forEach((value,index) => {
-			if(!this.stage.imgsArrangeArr[index]){
-				pos:{
-					left:0,
-					top:0
-				}
-			}
+		let me = this;
+		imageDatas.forEach(function(value,index){
+			if (!me.state.imgsArrangeArr[index]) {
+	            me.state.imgsArrangeArr[index] = {
+	                pos: {
+	                    left: 0,
+	                    top: 0
+	                },
+	                rotate: 0,
+	                isInverse: false,
+	                isCenter: false
+	            };
+	        }
 			imgFigures.push(<ImgFigure data={value} ref={'imgFigure'+index} key={index}/>);
-		}.bind(this));
+		});
 
 		return (
 		   <section className="stage" ref="stage">
@@ -120,7 +131,7 @@ class AppComponent extends React.Component {
 		    </section>
 		);
 	}
-}
+});
 
 AppComponent.defaultProps = {
 
