@@ -33,14 +33,35 @@ let ImgFigure = React.createClass({
 	},
 	render(){
 		let styleObj = {};
-		// 如果props属性中指定了这张图片的位置
+
+		// 如果props属性中指定了当前这张图片的位置
+		if (this.props.arrange.pos) {
+			styleObj = this.props.arrange.pos
+		}
+		// 如果当前图片的旋转角度有值 且 不为 0 ，添加旋转角度
+		if(this.props.arrange.rotate){
+			(['MozTransform', 'msTransform', 'WebkitTransform', 'transform']).forEach(function (value) {
+				styleObj[value] = 'rotate(' + this.props.arrange.rotate + 'deg)';
+			}.bind(this));
+		}
+		// 如果当前是居中图片， z-index 设值 为 11 
+		if(this.props.arrange.isCenter){
+			styleObj.zIndex = 11;
+		}
+		let imgFigureClassName = 'img-figure';
+			imgFigureClassName += this.props.arrange.isInverse ? ' is-inverse' : '';
 		return (
-			<figure className="img-figure">
+			<figure className={imgFigureClassName} style={styleObj} onClick={this.handleClick}>
 				<img src={this.props.data.imageURL}
 					alt={this.props.data.title}
 				/>
 				<figcaption>
 					<h2 className="img-title">{this.props.data.title}</h2>
+					<div className="img-back" onClick={this.handleClick}>
+						<p>
+							{this.props.data.desc}
+						</p>
+					</div>	
 				</figcaption>
 			</figure>
 		);
@@ -194,6 +215,38 @@ let  AppComponent = React.createClass ({
               isCenter: false
             };
         });
+
+        // 布局左右两侧的图片
+        for (var i = 0, j = imgsArrangeArr.length, k = j / 2; i < j; i++) {
+            var hPosRangeLORX = null;
+
+            // 前半部分布局左边， 右半部分布局右边
+            if (i < k) {
+                hPosRangeLORX = hPosRangeLeftSecX;
+            } else {
+                hPosRangeLORX = hPosRangeRightSecX;
+            }
+
+            imgsArrangeArr[i] = {
+              pos: {
+                  top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
+                  left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
+              },
+              rotate: get30DegRandom(),
+              isCenter: false
+            };
+
+        }
+
+        if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
+            imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+        }
+
+        imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
+
+        this.setState({
+            imgsArrangeArr: imgsArrangeArr
+        });
 	},
 	getInitialState () {
 		return {
@@ -230,7 +283,7 @@ let  AppComponent = React.createClass ({
 
 		return (
 		   <section className="stage" ref="stage">
-		        <section className="img-url">
+		        <section className="img-sec">
 		            {imgFigures}
 		        </section>
 		        <nav className="controller-nav">
